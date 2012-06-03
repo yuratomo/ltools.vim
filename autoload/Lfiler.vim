@@ -48,7 +48,7 @@ let s:Lfiler_bookmark = {
   \ 'fold'        : 0,
   \ }
 
-function! Lfiler#Show(...)
+function! Lfiler#do(...)
   if exists('a:2') && !isdirectory(a:2)
     exe ':cd '. b:Lfiler_pwd
     return

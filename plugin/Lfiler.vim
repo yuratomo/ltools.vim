@@ -17,7 +17,7 @@ if !exists('g:Lfiler_disable_default_explorer')
    au!
   augroup END
   augroup LFiler
-    au BufEnter * silent! call Lfiler#Show(1, expand("<amatch>"))
+    au BufEnter * silent! call Lfiler#do(1, expand("<amatch>"))
   augroup END
 endif
 
