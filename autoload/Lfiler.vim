@@ -131,7 +131,7 @@ function! Lfiler#Help()
   echo 'D       delete file and list and bookmark'
   echo 'f       find file'
   echo 'F       diff yanked-file'
-  echo 'J       enter refine mode'
+  echo 'i       enter refine mode'
   echo 'J       change directory (jump)'
   echo 'p       paste yanked-files to current directory'
   echo 'P       move yanked-files to current directory'
@@ -163,7 +163,8 @@ function! Lfiler#Update(holdcur, issue_cmd)
   if a:issue_cmd == 1 || empty(s:Lfiler_dir_lines)
     let s:Lfiler_dir_lines = split(system('dir '.opt), '\n')
   endif
-  call setline(1, s:Lfiler_dir_lines[3][1:].' [F1: help]')
+  let ww = winwidth(0)
+  call setline(1, printf('%-' . ww . 's', s:Lfiler_dir_lines[3][1:] . ' [F1: help]') . ".")
   call setline(2, s:Lfiler_sort.title.s:Lfiler_refine_word)
   let dirline = []
   if s:getFileName(s:Lfiler_dir_lines[5]) == '.'
@@ -337,8 +338,7 @@ function! Lfiler#DeleteFile()
     for file in files
       echo ' - '.file
     endfor
-    let mes = s:Lfiler_confirm.delete
-    if s:quest(mes, '', '[yn]') != 'y'
+    if s:quest(s:Lfiler_confirm.delete, '', '[yn]') != 'y'
       return
     endif
   endif

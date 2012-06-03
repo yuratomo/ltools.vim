@@ -26,10 +26,10 @@ syn match LfilerInfo1  /^.*個のファイル.* バイト$/
 syn match LfilerInfo2  /^.*個のディレクトリ.* バイトの空き領域$/
 syn match LfilerSort   /\(\<name\>\|\<size\>\|\<time\>\|\<extension\>\)/
 
-hi LfilerInfoA  guibg=#000020 guifg=#5050FF gui=none
-hi LfilerInfoB  guibg=#000515 guifg=#7070FF gui=none
-hi LfilerInfoc  guibg=#001010 guifg=#9090FF gui=none
-hi LfilerDir    guibg=#050500 guifg=#F0F050 gui=none
+hi LfilerInfoA  guibg=#000030 guifg=#3333FF gui=none
+hi LfilerInfoB  guibg=#000520 guifg=#5555FF gui=none
+hi LfilerInfoC  guibg=#001010 guifg=#7777FF gui=none
+hi LfilerDir    guibg=#000500 guifg=#66DD66 gui=none
 hi LfilerSym    guibg=#000000 guifg=#DDDDAA gui=none
 hi LfilerExt1   guibg=#000000 guifg=#FF0000 gui=none
 hi LfilerExt2   guibg=#000000 guifg=#00FF00 gui=none

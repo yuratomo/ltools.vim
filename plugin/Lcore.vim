@@ -1,13 +1,13 @@
 " FILE: Lcore.vim
 " AUTHOR:  yuratomo
 " Last Modified: 31 Jan 2012.
-" Version: 0.1.0
+" Version: 0.2.0
 
 if exists('g:Lcore_loaded') && g:Lcore_loaded == 1
   finish
 endif
 
-let g:Lcore_title_format = "-- %s --"
+let g:Lcore_title_format = "--%s--"
 let g:Lcore_refine_prefix = 'refine='
 if !exists('g:Lcore_plugins')
   let g:Lcore_plugins = []
