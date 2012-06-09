@@ -28,6 +28,8 @@ syn match LfilerInfo2  /^.*個のディレクトリ.* バイトの空き領域$/
 syn match LfilerSort   /\(\<name$\|\<size$\|\<time$\|\<extension$\)/
 syn match LfilerSelect /^.*\*.*$/
 
+"if exists('g:colors_name') && g:colors_name == "neon"
+if 0
 hi LfilerInfoA  guibg=#000505 guifg=#5060FF gui=none
 hi LfilerInfoB  guibg=#001010 guifg=#7090FF gui=none
 hi LfilerInfoC  guibg=#001515 guifg=#90A0FF gui=none
@@ -51,6 +53,31 @@ hi LfilerCont   guibg=#000030 guifg=#EEEEEE gui=none
 hi LfilerInfo1  guibg=#000000 guifg=#666666 gui=none
 hi LfilerInfo2  guibg=#000000 guifg=#666666 gui=none
 hi LfilerSort   guibg=#000000 guifg=#80EEEE
+else
+hi link LfilerInfoA   Keyword
+hi link LfilerInfoB   Type
+hi link LfilerInfoC   PreProc
+hi link LfilerDir     Directory
+hi link LfilerSym     String
+hi link LfilerExt1    Number
+hi link LfilerExt2    Boolean
+hi link LfilerExt3
+hi link LfilerExt4
+hi link LfilerExt5
+hi link LfilerExt6
+hi link LfilerPath    Comment
+hi link LfilerUnc     Comment
+hi link LfilerYTitle  Title
+hi link LfilerFTitle  Title
+hi link LfilerCTitle  Title
+hi link LfilerBTitle  Title
+hi link LfilerMTitle  Title
+hi link LfilerHeader  Title
+hi link LfilerCont    Repeat
+hi link LfilerInfo1   Define
+hi link LfilerInfo2   Macro
+hi link LfilerSort    Statement
+endif
 hi LfilerSelect               guifg=#0000FF gui=bold
 
 let b:LFiler_syntax = 1
