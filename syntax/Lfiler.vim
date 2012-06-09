@@ -28,8 +28,7 @@ syn match LfilerInfo2  /^.*個のディレクトリ.* バイトの空き領域$/
 syn match LfilerSort   /\(\<name$\|\<size$\|\<time$\|\<extension$\)/
 syn match LfilerSelect /^.*\*.*$/
 
-"if exists('g:colors_name') && g:colors_name == "neon"
-if 0
+if exists('g:colors_name') && g:colors_name == "neon"
 hi LfilerInfoA  guibg=#000505 guifg=#5060FF gui=none
 hi LfilerInfoB  guibg=#001010 guifg=#7090FF gui=none
 hi LfilerInfoC  guibg=#001515 guifg=#90A0FF gui=none
