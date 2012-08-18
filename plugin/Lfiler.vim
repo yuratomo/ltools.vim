@@ -9,8 +9,8 @@ if !has('win32')
   echoerr 'Lfiler can not load.' | finish
 endif
 
-command! -nargs=* -complete=dir Lfiler :call Lfiler#Show(1, <f-args>)
-command! -nargs=* -complete=dir LFiler :call Lfiler#Show(0, <f-args>)
+command! -nargs=* -complete=dir Lfiler :call Lfiler#do(1, <f-args>)
+command! -nargs=* -complete=dir LFiler :call Lfiler#do(0, <f-args>)
 
 if !exists('g:Lfiler_disable_default_explorer')
   augroup FileExplorer

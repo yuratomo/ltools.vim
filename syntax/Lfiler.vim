@@ -2,7 +2,6 @@ if version < 700 || exists("b:LFiler_syntax")
   finish
 endif
 
-"syn match LfilerInfo   /^[0-9\/]\{10\}  [0-9:]\{5\} *[0-9,]*/
 syn match LfilerInfoA  /^[0-9\/]\{10\}  */
 syn match LfilerInfoB  /[0-9:]\{5\} */
 syn match LfilerInfoC  /[0-9,]* /
@@ -77,6 +76,5 @@ hi link LfilerInfo1   Define
 hi link LfilerInfo2   Macro
 hi link LfilerSort    Statement
 endif
-hi LfilerSelect               guifg=#0000FF gui=bold
-
+hi LfilerSelect               guifg=#0000FF gui=bold 
 let b:LFiler_syntax = 1
