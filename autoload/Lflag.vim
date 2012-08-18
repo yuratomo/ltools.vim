@@ -47,16 +47,16 @@ function! Lflag#Prev()
 endfunction
 
 function! Lflag#Refresh()
-  call clearmatches()
   if exists('b:Lflag_data')
     for line in keys(b:Lflag_data.marks)
+      call matchdelete(b:Lflag_data.marks[line])
       let b:Lflag_data.marks[line] = matchadd('LflagSelect', '\%' . line . 'l')
     endfor
   endif
 endfunction
 
 function! Lflag#BufWinLeave()
-  call clearmatches()
+  call s:clean()
 endfunction
 
 function! Lflag#BufWinEnter()
@@ -65,6 +65,13 @@ endfunction
 
 function! Lflag#Clear()
   call s:clean()
+  if exists('b:Lflag_data')
+    unlet b:Lflag_data
+  endif
+  augroup Lflag
+    au!
+  augroup END
+  redraw
 endfunction
 
 function! s:prepare()
@@ -81,12 +88,9 @@ endfunction
 
 function! s:clean()
   if exists('b:Lflag_data')
-    unlet b:Lflag_data
+    for line in keys(b:Lflag_data.marks)
+      call matchdelete(b:Lflag_data.marks[line])
+    endfor
   endif
-  call clearmatches()
-  augroup Lflag
-    au!
-  augroup END
-  redraw
 endfunction
 
