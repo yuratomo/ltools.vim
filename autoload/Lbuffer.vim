@@ -21,12 +21,11 @@ endfunction
 function! s:plugin.list()
   try 
     redir => bufoutput
-      ls
+      silent! ls
     redir END
   catch /.*/
     let bufoutput = ''
   endtry
-  redraw
 
   let lines = split(bufoutput, '\n')
   let s:plugin.items = []
