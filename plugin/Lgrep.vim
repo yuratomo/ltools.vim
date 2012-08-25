@@ -9,9 +9,6 @@
 "  grep cancel:
 "   :LgrepCancel
 "
-"  show grep status:
-"   :LgrepStatus
-"
 "  update quickfix list:
 "   :LgrepUpdate
 "
@@ -32,6 +29,5 @@ endif
 command! -nargs=* Lgrep :call Lgrep#do(<f-args>)
 command! -nargs=0 LgrepUpdate :call Lgrep#UpdateQuickFix()
 command! -nargs=0 LgrepCancel :call Lgrep#CancelGrep()
-command! -nargs=0 LgrepStatus :call Lgrep#ShowStatus()
 
 let g:Lgrep_loaded = 1
