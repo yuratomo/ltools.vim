@@ -2,7 +2,7 @@ let s:plugin = Lcore#initPlugin('Lbookmark')
 function! Lbookmark#init()
 endfunction
 
-function! Lbookmark#do()
+function! Lbookmark#do(...)
   hi link LbookmarkDirHilight  Statement
   hi link LbookmarkExtHilight  Comment
   hi link LbookmarkNameHilight String

@@ -20,7 +20,7 @@ if exists('g:Lgrep_loaded') && g:Lgrep_loaded == 1
   finish
 endif
 if !exists('g:Lgrep_AutoUpdateQuickFix')
-  let g:Lgrep_AutoUpdateQuickFix = 1
+  let g:Lgrep_AutoUpdateQuickFix = 0
 endif
 if !exists('g:Lgrep_hilight')
   let g:Lgrep_hilight = 'highlight StatusLine guifg=#FFFFFF guibg=#FF0000 gui=none'

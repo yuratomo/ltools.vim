@@ -3,7 +3,7 @@ function! Lbuffer#init()
   let s:title = printf(g:Lcore_title_format, s:plugin.title)
 endfunction
 
-function! Lbuffer#do()
+function! Lbuffer#do(...)
   hi def link LbufferSynNum  Number
   hi def link LbufferSynMode Identifier
   hi def link LbufferSynHide String

@@ -3,7 +3,7 @@ function! Loutline#init()
   let g:Loutline_last_file = ''
 endfunction
 
-function! Loutline#do()
+function! Loutline#do(...)
   call Lcore#show(s:plugin, join(a:000, ' '))
 endfunction
 
