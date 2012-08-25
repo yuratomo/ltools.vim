@@ -46,7 +46,12 @@ endfunction
 function! s:plugin.open(line)
   let parts = split(a:line, '|')
   wincmd p
-  exe 'cd ' . g:Ltaglist_pwd
-  exe ':e ' . parts[2]
-  exe ':' . parts[3]
+  try
+    exe 'cd ' . g:Ltaglist_pwd
+    exe ':e +1 ' . parts[2]
+    exe ':' . parts[3]
+  catch /.*/
+  endtry
+  redraw
 endfunction
+
