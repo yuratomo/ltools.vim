@@ -1,5 +1,8 @@
 let s:plugin = Lcore#initPlugin('Lbookmark')
+
 function! Lbookmark#init()
+  call Lbookmark#load()
+  call Lfiler#LoadBookmark(s:plugin.items)
 endfunction
 
 function! Lbookmark#do(...)
@@ -53,7 +56,17 @@ function! Lbookmark#regist(...)
   if name == ''
     return
   endif
-  let line = printf('%-32s', name).target
+  let line = printf('%-33s', name).target
+  let pos = index(s:plugin.items, line)
+  if pos >= 0
+    call remove(s:plugin.items, pos)
+  endif
+  call insert(s:plugin.items, line, 0)
+  call Lbookmark#save()
+endfunction
+
+function! Lbookmark#registBookmark(path)
+  let line = printf('%-33s', substitute(a:path, '.*\', '',  '')) . a:path
   let pos = index(s:plugin.items, line)
   if pos >= 0
     call remove(s:plugin.items, pos)

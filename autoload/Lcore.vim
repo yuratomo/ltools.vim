@@ -113,6 +113,7 @@ function! Lcore#close()
       endtry
     endif
   endfor
+  call clearmatches()
   let g:Lcore_refine_word = ''
 endfunction
 

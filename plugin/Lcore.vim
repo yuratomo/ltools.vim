@@ -12,7 +12,7 @@ let g:Lcore_refine_prefix = 'refine='
 if !exists('g:Lcore_plugins')
   let g:Lcore_plugins = []
 endif
-call extend( g:Lcore_plugins, [ 'Lmru', 'Lbuffer', 'Lbookmark', 'Loutline'])
+call extend( g:Lcore_plugins, [ 'Lmru', 'Lbuffer', 'Lbookmark'])
 
 if !exists('g:Lcore_line_num')
   let g:Lcore_line_num = 20

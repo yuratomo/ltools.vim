@@ -1,4 +1,3 @@
-
 let s:Lfiler_title = 'Lfiler'
 let b:Lfiler_pwd = ''
 let s:Lfiler_dir_lines = []
@@ -425,39 +424,22 @@ function! Lfiler#Jump()
   call Lfiler#Update(0,1)
 endfunction
 
-function! Lfiler#LoadBookmark()
-  if filereadable(g:Lfiler_bookmark_file)
-    let s:Lfiler_bookmark.files = readfile(g:Lfiler_bookmark_file)
-  endif
-endfunction
-call Lfiler#LoadBookmark()
-
-function! Lfiler#SaveBookmark()
-  if exists('s:Lfiler_bookmark.files') && len(s:Lfiler_bookmark.files) > 0
-    call writefile(s:Lfiler_bookmark.files, g:Lfiler_bookmark_file)
-  else 
-    call writefile([], g:Lfiler_bookmark_file)
-  endif
+function! Lfiler#LoadBookmark(list)
+  let s:Lfiler_bookmark.files = a:list
 endfunction
 
 function! Lfiler#RegstBookmark()
   let pwd = s:getCurDir()
   let [ files, mode ] = s:getSelectedFiles()
-  if !exists("s:Lfiler_bookmark.files")
-    let s:Lfiler_bookmark.files = []
-  endif
   for file in files
     if file[1:2] == ':\'
       let fpath = file
     else
-      let fpath = pwd.file
+      let fpath = pwd . file
     endif
-    if index(s:Lfiler_bookmark.files, fpath) == -1
-      call add(s:Lfiler_bookmark.files, fpath)
-    endif
+    call Lbookmark#registBookmark(fpath)
   endfor
   call Lfiler#Update(1,0)
-  call Lfiler#SaveBookmark()
 endfunction
 
 function! Lfiler#MoveToDirBottom()
@@ -555,7 +537,11 @@ endfunction
 
 function! s:getFileName(line)
   if a:line[0:1] == ' -'
-    return a:line[3:]
+    if a:line[37] == ':'
+      return a:line[36:]
+    else
+      return a:line[3:]
+    endif
   endif
   let dir  = s:getDirType(a:line)
   if dir == '<SYML'
