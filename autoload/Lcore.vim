@@ -45,6 +45,9 @@ function! Lcore#init()
       call {pname}#init()
     endfor
   endif
+  if !hlexists('LcoreSelect')
+    hi LcoreSelect  guibg=NONE guifg=NONE gui=BOLD
+  endif
 endfunction
 
 function! Lcore#show(plugin, param)

@@ -1,19 +1,15 @@
-let s:count = 3
+let s:count = 1
 
 function! Lsearch#Search(...)
   if !exists('b:Lsearch_data')
     call s:prepare()
   endif
-  if exists('b:Lsearch_data.0')
-    for idx in reverse(range(s:count-1))
-      if exists('b:Lsearch_data[idx]')
-        let b:Lsearch_data[idx+1] = {}
-        let b:Lsearch_data[idx+1].keyword = b:Lsearch_data[idx].keyword
-      endif
-    endfor
+  if exists('b:Lsearch_data.keyword') && b:Lsearch_data.keyword == join(a:000, ' ')
+    call s:clean()
+    unlet b:Lsearch_data.keyword
+    return
   endif
-  let b:Lsearch_data.0 = {}
-  let b:Lsearch_data.0.keyword = join(a:000, ' ')
+  let b:Lsearch_data.keyword = join(a:000, ' ')
   call Lsearch#Refresh()
   redraw
 endfunction
@@ -21,11 +17,7 @@ endfunction
 function! Lsearch#Refresh()
   call s:clean()
   if exists('b:Lsearch_data')
-    for idx in range(s:count)
-      if exists('b:Lsearch_data[idx]')
-        let b:Lsearch_data[idx].id = matchadd('LsearchSelect' . idx, b:Lsearch_data[idx].keyword)
-      endif
-    endfor
+    let b:Lsearch_data.id = matchadd('LsearchSelect', b:Lsearch_data.keyword)
   endif
 endfunction
 
@@ -50,14 +42,8 @@ endfunction
 
 function! s:prepare()
   let b:Lsearch_data = {}
-  if !hlexists('LsearchSelect0')
-    hi LsearchSelect0  guibg=#3030A0 guifg=NONE gui=BOLD
-  endif
-  if !hlexists('LsearchSelect1')
-    hi LsearchSelect1  guibg=#202080 guifg=NONE gui=NONE
-  endif
-  if !hlexists('LsearchSelect2')
-    hi LsearchSelect2  guibg=#101040 guifg=NONE gui=NONE
+  if !hlexists('LsearchSelect')
+    hi LsearchSelect  guibg=#3030A0 guifg=NONE gui=BOLD
   endif
   augroup Lsearch
     au!
@@ -67,12 +53,9 @@ function! s:prepare()
 endfunction
 
 function! s:clean()
-  if exists('b:Lsearch_data')
-    for idx in range(s:count)
-      if exists('b:Lsearch_data[idx].id')
-        call matchdelete(b:Lsearch_data[idx].id)
-      endif
-    endfor
+  if exists('b:Lsearch_data.id')
+    call matchdelete(b:Lsearch_data.id)
+    unlet b:Lsearch_data.id
   endif
 endfunction
 

@@ -1,4 +1,5 @@
 let s:plugin = Lcore#initPlugin('Ltaglist')
+let s:Ltaglist_keyword = ''
 let g:Ltaglist_update = 0
 
 function! Ltaglist#init()
@@ -48,10 +49,12 @@ function! s:plugin.open(line)
   wincmd p
   try
     exe 'cd ' . g:Ltaglist_pwd
-    exe ':e +1 ' . parts[2]
-    exe ':' . parts[3]
+    exe ':e +' . parts[3] . ' ' . parts[2]
+    redraw
+    normal zz
+    call clearmatches()
+    call matchadd('LcoreSelect', '\%' . parts[3] . 'l')
   catch /.*/
   endtry
-  redraw
 endfunction
 

@@ -160,7 +160,7 @@ function! Lfiler#Update(holdcur, issue_cmd)
     let opt = ' '.pwd
   endif
   if a:issue_cmd == 1 || empty(s:Lfiler_dir_lines)
-    let s:Lfiler_dir_lines = split(system('dir '.opt), '\n')
+    let s:Lfiler_dir_lines = split(s:system('dir '.opt), '\n')
   endif
   let ww = winwidth(0)
   call setline(1, printf('%-' . ww . 's', s:Lfiler_dir_lines[3][1:] . ' [F1: help]') . ".")
@@ -259,13 +259,13 @@ function! Lfiler#DiffFile()
     return
   endif
   let bn = bufwinnr('%')
-  exec ':diffoff!'
+  diffoff!
   for file in s:Lfiler_yank.files
     exec 'rightbelow vsp '.file
     diffthis
   endfor
   exec ':'.bn.'wincmd w'
-  exec ':silent bd'
+  bd
 endfunction
 
 function! Lfiler#PasteFile(mode)
@@ -290,7 +290,7 @@ function! Lfiler#PasteFile(mode)
       let cmd = 'copy /Y'
       let dest_append = ''
     endif
-    echo system(cmd.' '.shellescape(file).' '.shellescape(s:getCurDir().dest_append))
+    echo s:system(cmd.' '.shellescape(file).' '.shellescape(s:getCurDir().dest_append))
   endfor
   unlet s:Lfiler_yank.files
   call Lfiler#Update(1,1)
@@ -318,7 +318,7 @@ function! Lfiler#CreateFolder()
   if dest == ''
     return
   endif
-  echo system('mkdir '.dest)
+  echo s:system('mkdir '.dest)
   call Lfiler#Update(1,1)
 endfunction
 
@@ -346,7 +346,7 @@ function! Lfiler#DeleteFile()
     if mode == 0
       let pwd = s:getCurDir()
       if isdirectory(pwd.file)
-        echo system('rmdir /S /Q '.shellescape(pwd.file))
+        echo s:system('rmdir /S /Q '.shellescape(pwd.file))
       else
         call delete(file)
       endif
@@ -387,7 +387,7 @@ function! Lfiler#FindFile()
   if ans == ''
     return
   endif
-  let s:Lfiler_find.files = split(system('dir /s /b '.ans), '\n')
+  let s:Lfiler_find.files = split(s:system('dir /s /b '.ans), '\n')
   call Lfiler#Update(1,0)
 endfunction
 
@@ -652,4 +652,8 @@ function! s:updateSortOptionTitle()
   let s:Lfiler_sort.option_len = len(s:Lfiler_sort.title)
 endfunction
 call s:updateSortOptionTitle()
+
+function! s:system(cmd)
+  return iconv(system(a:cmd), 'cp932', &enc)
+endfunction
 

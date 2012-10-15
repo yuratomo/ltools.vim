@@ -6,9 +6,6 @@ function! Lquick#init()
     au!
     au QuickFixCmdPost * call Lquick#update()
   augroup END
-  if !hlexists('LquickSelect')
-    hi LquickSelect  guibg=NONE guifg=NONE gui=BOLD,Underline
-  endif
 endfunction
 call Lquick#init()
 
@@ -57,6 +54,6 @@ function! s:plugin.open(line)
   exe ':e +'.parts[1].' '.parts[0]
   normal zz
   call clearmatches()
-  call matchadd('LquickSelect', '\%' . parts[1] . 'l')
+  call matchadd('LcoreSelect', '\%' . parts[1] . 'l')
 endfunction
 
