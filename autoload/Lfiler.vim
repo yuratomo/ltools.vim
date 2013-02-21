@@ -157,6 +157,7 @@ function! Lfiler#Help()
   echo 'q       exit'
   echo 'r       rename cursor-file'
   echo 's       change sort mode'
+  echo 'S       show git/svn status'
   echo 't       open cursor-file at new tab'
   echo 'T       move to top of file list'
   echo 'u       update list'
@@ -428,8 +429,12 @@ function! Lfiler#FindFile()
 endfunction
 
 function! Lfiler#Status()
-  let s:Lfiler_git.files = split(s:system('git status -s'), '\n')
-  let s:Lfiler_svn.files = split(s:system('svn status -s'), '\n')
+  if executable('git')
+    let s:Lfiler_git.files = split(s:system('git status -s'), '\n')
+  endif
+  if executable('svn')
+    let s:Lfiler_svn.files = split(s:system('svn status'), '\n')
+  endif
   call Lfiler#Update(1,0)
 endfunction
 
@@ -468,6 +473,10 @@ endfunction
 
 function! Lfiler#LoadBookmark(list)
   let s:Lfiler_bookmark.files = a:list
+endfunction
+
+function! Lfiler#SaveBookmark()
+  "call Lbookmark#save()
 endfunction
 
 function! Lfiler#RegstBookmark()
@@ -588,7 +597,7 @@ function! s:getCurDir()
 endfunction
 
 function! s:getFileName(line)
-  if a:line[0:1] == ' -'
+  if a:line[0:1] =~ ' [-MADRCUXI?!~S+KOTB]'
     if a:line[37] == ':'
       return a:line[36:]
     else
@@ -617,7 +626,7 @@ function! s:isAvailableLine(line)
     endif
     return 1
   endif
-  if a:line[0:1] == ' -'
+  if a:line[0:1] =~ ' [-MADRCUXI?!~S+KOTB]'
     return 1
   endif
   return 0
