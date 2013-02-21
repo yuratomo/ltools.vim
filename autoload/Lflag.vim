@@ -89,7 +89,10 @@ endfunction
 function! s:clean()
   if exists('b:Lflag_data')
     for line in keys(b:Lflag_data.marks)
-      call matchdelete(b:Lflag_data.marks[line])
+      try
+        call matchdelete(b:Lflag_data.marks[line])
+      catch /.*/
+      endtry
     endfor
   endif
 endfunction

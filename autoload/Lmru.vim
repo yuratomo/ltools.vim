@@ -8,6 +8,7 @@ endfunction
 
 function! s:plugin.preproc()
   syn match mruDirHilight /^.*\\/
+  syn match mruDirHilight /^.*\//
   syn match mruExtHilight /\.\w*$/
 endfunction
 

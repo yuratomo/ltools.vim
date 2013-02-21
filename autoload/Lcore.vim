@@ -48,6 +48,9 @@ function! Lcore#init()
   if !hlexists('LcoreSelect')
     hi LcoreSelect  guibg=NONE guifg=NONE gui=BOLD
   endif
+
+  hi LcoreTitleActive    guibg=#0087af guifg=#FFFFFF gui=bold
+  hi LcoreTitleNonActive guibg=#585858 guifg=#FFFFFF gui=bold
 endfunction
 
 function! Lcore#show(plugin, param)
@@ -71,11 +74,13 @@ function! Lcore#update()
     call filter(list, "Lcore#refine_filter(v:val)")
   endif
 
-  let header = '[[ '
+  "let header = '[[ '
+  let header = ''
   for plugin in g:Lplugins_list
-    let header = header . ' ' . plugin.title
+    "let header = header . ' ' . plugin.title
+    let header = header . plugin.title . ' '
   endfor
-  let header = header . ' ]]'
+  "let header = header . ' ]]'
 
   setlocal modifiable
   call s:clear()
@@ -207,10 +212,10 @@ endfunction
 function! s:hilightTitle()
   for plugin in g:Lplugins_list
     if plugin == s:Lcore_cur_plugin 
-      exe 'syn keyword Lcore' . plugin.title . ' ' . plugin.title
-      exe 'hi link Lcore' . plugin.title . ' Function'
+      exe 'syn match Lcore' . plugin.title . ' /' . plugin.title . ' /'
+      exe 'hi link Lcore' . plugin.title . ' LcoreTitleActive'
     else
-      exe 'hi link Lcore' . plugin.title . ' NONE'
+      exe 'hi link Lcore' . plugin.title . ' LcoreTitleNonActive'
     endif
   endfor
 endfunction
