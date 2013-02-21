@@ -20,6 +20,8 @@ syn match LfilerFTitle '<< find files >>'
 syn match LfilerCTitle '<< command >>'
 syn match LfilerBTitle '<< bookmark files >>'
 syn match LfilerMTitle '<< mru files >>'
+syn match LfilerGTitle '<< git status >>'
+syn match LfilerSTitle '<< svn status >>'
 syn match LfilerHeader /^.* のディレクトリ.*$/
 syn match LfilerCont   /^sort=.*$/
 syn match LfilerInfo1  /^.*個のファイル.* バイト$/
@@ -27,7 +29,7 @@ syn match LfilerInfo2  /^.*個のディレクトリ.* バイトの空き領域$/
 syn match LfilerSort   /\(\<name$\|\<size$\|\<time$\|\<extension$\)/
 syn match LfilerSelect /^.*\*.*$/
 
-if exists('g:colors_name') && g:colors_name ==# "neon"
+if exists('g:colors_name') && g:colors_name =~ "neon"
 hi LfilerInfoA  guibg=#000505 guifg=#5060FF gui=none
 hi LfilerInfoB  guibg=#001010 guifg=#7090FF gui=none
 hi LfilerInfoC  guibg=#001515 guifg=#90A0FF gui=none
@@ -46,6 +48,8 @@ hi LfilerFTitle guibg=#000000 guifg=#6699FF gui=underline
 hi LfilerCTitle guibg=#000000 guifg=#6699FF gui=underline
 hi LfilerBTitle guibg=#000000 guifg=#6699FF gui=underline
 hi LfilerMTitle guibg=#000000 guifg=#6699FF gui=underline
+hi LfilerGTitle guibg=#000000 guifg=#6699FF gui=underline
+hi LfilerSTitle guibg=#000000 guifg=#6699FF gui=underline
 hi LfilerHeader guibg=#004080 guifg=#B0D0FF gui=none
 hi LfilerCont   guibg=#000030 guifg=#EEEEEE gui=none
 hi LfilerInfo1  guibg=#000000 guifg=#666666 gui=none
@@ -70,6 +74,8 @@ hi link LfilerFTitle  Title
 hi link LfilerCTitle  Title
 hi link LfilerBTitle  Title
 hi link LfilerMTitle  Title
+hi link LfilerGTitle  Title
+hi link LfilerSTitle  Title
 hi link LfilerHeader  Title
 hi link LfilerCont    Repeat
 hi link LfilerInfo1   Define

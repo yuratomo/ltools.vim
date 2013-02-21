@@ -31,6 +31,7 @@ let s:Lfiler_yank = {
   \ 'mark_row'    : 2,
   \ 'mode'        : 1,
   \ 'fold'        : 0,
+  \ 'prefix'      : ' - ',
   \ }
 let s:Lfiler_find = {
   \ 'title'       : '<< find files >>',
@@ -38,6 +39,7 @@ let s:Lfiler_find = {
   \ 'mark_row'    : 2,
   \ 'mode'        : 4,
   \ 'fold'        : 0,
+  \ 'prefix'      : ' - ',
   \}
 let s:Lfiler_bookmark = {
   \ 'title'       : '<< bookmark files >>',
@@ -45,6 +47,23 @@ let s:Lfiler_bookmark = {
   \ 'mark_row'    : 2,
   \ 'mode'        : 2,
   \ 'fold'        : 0,
+  \ 'prefix'      : ' - ',
+  \ }
+let s:Lfiler_git = {
+  \ 'title'       : '<< git status >>',
+  \ 'start_index' : 0,
+  \ 'mark_row'    : 2,
+  \ 'mode'        : 5,
+  \ 'fold'        : 0,
+  \ 'prefix'      : '',
+  \ }
+let s:Lfiler_svn = {
+  \ 'title'       : '<< svn status >>',
+  \ 'start_index' : 0,
+  \ 'mark_row'    : 2,
+  \ 'mode'        : 6,
+  \ 'fold'        : 0,
+  \ 'prefix'      : '',
   \ }
 
 function! Lfiler#do(...)
@@ -106,6 +125,7 @@ function! Lfiler#KeyMapping()
   nnoremap <buffer> q         :call Lfiler#Close()<CR>
   nnoremap <buffer> r         :call Lfiler#Rename()<CR>
   nnoremap <buffer> s         :call Lfiler#ChangeSortMode()<CR>
+  nnoremap <buffer> S         :call Lfiler#Status()<CR>
   nnoremap <buffer> t         :call Lfiler#Open(2)<CR>
   nnoremap <buffer> T         :call Lfiler#MoveToDirTop()<CR>
   nnoremap <buffer> u         :call Lfiler#Update(1,1)<CR>
@@ -181,6 +201,8 @@ function! Lfiler#Update(holdcur, issue_cmd)
   let curpos = s:appendList(curpos, s:Lfiler_yank)
   let curpos = s:appendList(curpos, s:Lfiler_bookmark)
   let curpos = s:appendList(curpos, s:Lfiler_find)
+  let curpos = s:appendList(curpos, s:Lfiler_git)
+  let curpos = s:appendList(curpos, s:Lfiler_svn)
 
   if a:holdcur == 0
     call cursor(3,37)
@@ -363,6 +385,14 @@ function! Lfiler#DeleteFile()
       if exists("s:Lfiler_find.files")
         call remove(s:Lfiler_find.files, index(s:Lfiler_find.files, file))
       endif
+    elseif mode == s:Lfiler_git.mode
+      if exists("s:Lfiler_git.files")
+        call remove(s:Lfiler_git.files, index(s:Lfiler_git.files, file))
+      endif
+    elseif mode == s:Lfiler_svn.mode
+      if exists("s:Lfiler_svn.files")
+        call remove(s:Lfiler_svn.files, index(s:Lfiler_svn.files, file))
+      endif
     endif
   endfor
 
@@ -374,6 +404,12 @@ function! Lfiler#DeleteFile()
   endif
   if exists("s:Lfiler_bookmark.files") && empty(s:Lfiler_bookmark.files)
     unlet s:Lfiler_bookmark.files
+  endif
+  if exists("s:Lfiler_git.files") && empty(s:Lfiler_git.files)
+    unlet s:Lfiler_git.files
+  endif
+  if exists("s:Lfiler_svn.files") && empty(s:Lfiler_svn.files)
+    unlet s:Lfiler_svn.files
   endif
   if mode == s:Lfiler_bookmark.mode
     call Lfiler#SaveBookmark()
@@ -388,6 +424,12 @@ function! Lfiler#FindFile()
     return
   endif
   let s:Lfiler_find.files = split(s:system('dir /s /b '.ans), '\n')
+  call Lfiler#Update(1,0)
+endfunction
+
+function! Lfiler#Status()
+  let s:Lfiler_git.files = split(s:system('git status -s'), '\n')
+  let s:Lfiler_svn.files = split(s:system('svn status -s'), '\n')
   call Lfiler#Update(1,0)
 endfunction
 
@@ -491,9 +533,19 @@ function! s:getListInfoUnderCursor()
     let end = s:Lfiler_bookmark.start_index -1
     let midx = s:Lfiler_yank.mark_row
     let mode = s:Lfiler_yank.mode
+  elseif cl >= s:Lfiler_git.start_index
+    let start = s:Lfiler_git.start_index
+    let end = s:Lfiler_yank.start_index -1
+    let midx = s:Lfiler_git.mark_row
+    let mode = s:Lfiler_git.mode
+  elseif cl >= s:Lfiler_svn.start_index
+    let start = s:Lfiler_svn.start_index
+    let end = s:Lfiler_git.start_index -1
+    let midx = s:Lfiler_svn.mark_row
+    let mode = s:Lfiler_svn.mode
   else 
     let start = 1
-    let end = s:Lfiler_yank.start_index
+    let end = s:Lfiler_git.start_index
     let midx = s:Lfiler_file_mark_row
     let mode = 0
   endif
@@ -635,7 +687,7 @@ function! s:appendList(curpos, dict)
       call filter(files, "s:refine_filter(v:val)")
     endif
     for file in files
-      let curpos = s:setline(curpos, ' - '.file)
+      let curpos = s:setline(curpos, a:dict.prefix . file)
     endfor
   endif
   if a:dict.fold == 1
