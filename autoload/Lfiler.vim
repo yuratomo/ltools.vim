@@ -63,12 +63,12 @@ let s:Lfiler_svn = {
   \ 'mark_row'    : 2,
   \ 'mode'        : 6,
   \ 'fold'        : 0,
-  \ 'prefix'      : '',
+  \ 'prefix'      : ' ',
   \ }
 
 function! Lfiler#do(...)
   if exists('a:2') && !isdirectory(a:2)
-    exe ':cd '. b:Lfiler_pwd
+    call s:cd(b:Lfiler_pwd)
     return
   endif
 
@@ -86,9 +86,9 @@ function! Lfiler#do(...)
 
   if exists('a:2')
     if a:2[0] == '\'
-      exe ':cd '.substitute(a:2, '\\','\\\\','g')
+      call s:cd(substitute(a:2, '\\','\\\\','g'))
     else
-      exe ':cd '.a:2
+      call s:cd(a:2)
     endif
   endif
 
@@ -230,7 +230,7 @@ function! Lfiler#Open(mode)
     return
   endif
   if dir == '<DIR>' || dir == '<SYML'
-    exe ':cd '.pwd.item
+    call s:cd(pwd.item)
     call Lfiler#Update(0,1)
   else
     if a:mode == 0
@@ -433,7 +433,7 @@ function! Lfiler#Status()
     let s:Lfiler_git.files = split(s:system('git status -s'), '\n')
   endif
   if executable('svn')
-    let s:Lfiler_svn.files = split(s:system('svn status'), '\n')
+    let s:Lfiler_svn.files = map(split(s:system('svn status'), '\n'), 'substitute(v:val, " \\+", " ", "")')
   endif
   call Lfiler#Update(1,0)
 endfunction
@@ -458,7 +458,7 @@ function! Lfiler#ChangeSortMode()
 endfunction
 
 function! Lfiler#Upper()
-  cd ..
+  call s:cd('..')
   call Lfiler#Update(0,1)
 endfunction
 
@@ -467,7 +467,7 @@ function! Lfiler#Jump()
   if ans == ''
     return
   endif
-  cd `=ans`
+  call s:cd(ans)
   call Lfiler#Update(0,1)
 endfunction
 
@@ -716,5 +716,15 @@ call s:updateSortOptionTitle()
 
 function! s:system(cmd)
   return iconv(system(a:cmd), 'cp932', &enc)
+endfunction
+
+function! s:cd(dir)
+  exec ':cd ' . a:dir
+  if exists("s:Lfiler_svn.files")
+    unlet s:Lfiler_svn.files
+  endif
+  if exists("s:Lfiler_git.files")
+    unlet s:Lfiler_git.files
+  endif
 endfunction
 
