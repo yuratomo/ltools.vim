@@ -9,3 +9,4 @@ endif
 command! -nargs=? Lbuffer :call Lbuffer#do(<f-args>)
 
 let g:Lbuffer_loaded = 1
+

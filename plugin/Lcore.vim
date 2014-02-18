@@ -21,3 +21,4 @@ endif
 command! -nargs=0 Lclose :call Lcore#close()
 
 let g:Lcore_loaded = 1
+

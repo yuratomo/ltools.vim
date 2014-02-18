@@ -23,6 +23,9 @@ function! s:plugin.postproc()
 endfunction
 
 function! s:plugin.list()
+  if !exists('g:Loutline_last_file')
+    call Loutline#init()
+  endif
   if !has_key(g:Loutline_mapping, g:Loutline_ext) || !exists('g:Loutline_file')
     return []
   endif
@@ -60,6 +63,10 @@ function! s:plugin.list()
 endfunction
 
 function! s:plugin.open(line)
+  if !exists('g:Loutline_last_file')
+    call Loutline#init()
+  endif
+
   wincmd p
   if expand('%:p') != g:Loutline_last_file
     exe ':e +' . split(a:line, ' ')[0] . ' ' . g:Loutline_last_file

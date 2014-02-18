@@ -12,14 +12,14 @@ endif
 command! -nargs=* -complete=dir Lfiler :call Lfiler#do(1, <f-args>)
 command! -nargs=* -complete=dir LFiler :call Lfiler#do(0, <f-args>)
 
-if !exists('g:Lfiler_disable_default_explorer')
-  augroup FileExplorer
-   au!
-  augroup END
-  augroup LFiler
-    au BufEnter * silent! call Lfiler#do(1, expand("<amatch>"))
-  augroup END
-endif
+"if !exists('g:Lfiler_disable_default_explorer')
+"  augroup FileExplorer
+"   au!
+"  augroup END
+"  augroup LFiler
+"    au BufEnter * silent! call Lfiler#do(1, expand("<amatch>"))
+"  augroup END
+"endif
 
 if !exists("g:Lfiler_bookmark_file")
   let g:Lfiler_bookmark_file = $home.'\\.vim_bookmark'

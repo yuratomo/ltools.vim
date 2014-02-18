@@ -65,3 +65,4 @@ function! s:plugin.delete(line)
 endfunction
 
 let g:Lbuffer_loaded = 1
+
