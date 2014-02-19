@@ -63,13 +63,11 @@ function! s:plugin.list()
 endfunction
 
 function! s:plugin.open(line)
-  if !exists('g:Loutline_last_file')
-    call Loutline#init()
-  endif
-
   wincmd p
   if expand('%:p') != g:Loutline_last_file
     exe ':e +' . split(a:line, ' ')[0] . ' ' . g:Loutline_last_file
+  else
+    exe ': ' . split(a:line, ' ')[0]
   endif
   normal zt
 endfunction

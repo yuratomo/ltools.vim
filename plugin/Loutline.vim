@@ -17,14 +17,14 @@ if !exists('g:Loutline_disable_default_c')
   let g:Loutline_mapping.h   = '\(^[a-zA-Z0-9]\|#i\)'
 endif
 if !exists('g:Loutline_disable_default_java')
-  let g:Loutline_mapping.java   = '\(^class\|^\s[a-zA-Z0-9_ ]*\(\|::\)[\~a-zA-Z1-9_\/=]*\s*([^;]*$\)'
+  let g:Loutline_mapping.java = '\(\<class\>\|\<public\>\|\<private\>\|\<protected\>\|\<interface\>\)'
 endif
 if !exists('g:Loutline_disable_default_as')
   let g:Loutline_mapping.as   = '\(\<function\>\|\<class\>\|\<package\>\)'
-  let g:Loutline_mapping.mxml = '^\s\{0,3\}<'
+  let g:Loutline_mapping.mxml   = '<\w\+\>'
 endif
 if !exists('g:Loutline_disable_default_vim')
-  let g:Loutline_mapping.vim  = '^function!'
+  let g:Loutline_mapping.vim  = '\<func\(tion\|\)\>'
 endif
 if !exists('g:Loutline_disable_default_txt')
   let g:Loutline_mapping.txt  = '^[\[ym]¡ ›œ'
@@ -33,7 +33,10 @@ if !exists('g:Loutline_disable_default_ini')
   let g:Loutline_mapping.ini  = '^\[.*'
 endif
 if !exists('g:Loutline_disable_default_cs')
-  let g:Loutline_mapping.cs   = '\(\<class\>\|^\s\+[a-zA-Z1-9_]\+\s\+[\~a-zA-Z0-9_]\+\(\|\s\+[|~a-zA-Z0-9]\+\)\+(\)'
+  let g:Loutline_mapping.cs   = '\(\<class\>\|\<public\>\|\<private\>\|\<protected\>\|\<interface\>\)'
+endif
+if !exists('g:Loutline_disable_default_xaml')
+  let g:Loutline_mapping.xaml   = '<\w\+\>'
 endif
 
 command! -nargs=? Loutline :call Loutline#do(<f-args>)
