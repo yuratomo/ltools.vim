@@ -6,16 +6,16 @@ function! Lbookmark#init()
 endfunction
 
 function! Lbookmark#do(...)
-  hi link LbookmarkDirHilight  Statement
-  hi link LbookmarkExtHilight  Comment
-  hi link LbookmarkNameHilight String
+  "hi link LbookmarkDirHilight  Statement
+  "hi link LbookmarkExtHilight  Comment
+  "hi link LbookmarkNameHilight String
   call Lcore#show(s:plugin, join(a:000, ' '))
 endfunction
 
 function! s:plugin.preproc()
-  syn match LbookmarkDirHilight  /.*\\/
-  syn match LbookmarkExtHilight  /\.\w*$/
-  syn match LbookmarkNameHilight /^[^\[]\{32\}/
+  "syn match LbookmarkDirHilight  /.*\\/
+  "syn match LbookmarkExtHilight  /\.\w*$/
+  "syn match LbookmarkNameHilight /^[^\[]\{32\}/
   nnoremap <buffer> r :call Lbookmark#rename()<CR>
 endfunction
 
