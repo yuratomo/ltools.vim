@@ -6,16 +6,10 @@ function! Lbookmark#init()
 endfunction
 
 function! Lbookmark#do(...)
-  "hi link LbookmarkDirHilight  Statement
-  "hi link LbookmarkExtHilight  Comment
-  "hi link LbookmarkNameHilight String
   call Lcore#show(s:plugin, join(a:000, ' '))
 endfunction
 
 function! s:plugin.preproc()
-  "syn match LbookmarkDirHilight  /.*\\/
-  "syn match LbookmarkExtHilight  /\.\w*$/
-  "syn match LbookmarkNameHilight /^[^\[]\{32\}/
   nnoremap <buffer> r :call Lbookmark#rename()<CR>
 endfunction
 
@@ -50,7 +44,11 @@ function! Lbookmark#regist(...)
   if a:0 == 1
     let target = a:1
   else
-    let target = expand('%:p')
+    if &bt == 'nofile'
+      let target = expand('%:p:h')
+    else
+      let target = expand('%:p')
+    endif
   endif
   let name = input('Input bookmark name for "'. target .'":', '')
   if name == ''
