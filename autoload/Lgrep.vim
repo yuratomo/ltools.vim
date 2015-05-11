@@ -36,7 +36,7 @@ function! Lgrep#UpdateQuickFix()
     if g:Lgrep_AutoUpdateQuickFix == 1
       copen
     endif
-    if g:Lgrep#status == 'grep end'
+    if g:Lgrep#status == 'grep end' || g:Lgrep#status == 'canceled'
       call s:clear()
       highlight clear StatusLine
       silent exec s:slhlcmd
