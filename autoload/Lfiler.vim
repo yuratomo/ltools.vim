@@ -102,6 +102,10 @@ let s:Lfiler_svn = {
   \ }
 
 function! Lfiler#do(...)
+  augroup FileExplorer
+   au!
+  augroup END
+
   if exists('a:2') && !isdirectory(a:2)
     call s:cd(b:Lfiler_pwd)
     return
