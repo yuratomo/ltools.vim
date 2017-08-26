@@ -1,10 +1,45 @@
 let s:Lfiler_title = 'Lfiler'
 let b:Lfiler_pwd = ''
 let s:Lfiler_dir_lines = []
-let s:Lfiler_file_mark_row     = 35
-let s:Lfiler_dir_file_row      = 36
-let s:Lfiler_dir_filetype_row  = 21
-let s:Lfiler_dir_filetype_erow = 25
+if has('win32')
+  let s:Lfiler_command           = 'dir'
+  let s:Lfiler_command_sort      = [ 'N', 'S', 'D', 'E', 'R' ]
+  let s:Lfiler_command_option    = '/OG'
+  let s:Lfiler_start_index       = 3
+  let s:Lfiler_start_row         = 1
+  let s:Lfiler_file_start        = 5
+  let s:Lfiler_dir_file_row      = 36
+  let s:Lfiler_file_mark_row     = 35
+  let s:Lfiler_available_pat     = '[0-9]\{4\}'
+  let s:Lfiler_dir_symbol1       = '<DIR>'
+  let s:Lfiler_dir_symbol2       = '<SYML'
+  let s:Lfiler_dir_filetype_row  = 21
+  let s:Lfiler_dir_filetype_erow = 25
+  let s:Lfiler_path_delim        = '\'
+  let s:Lfiler_available_char    = ' [-MADRCUXI?!~S+KOTB]'
+  let s:Lfiler_command_copy_r    = 'xcopy /E /I /F /H /Y'
+  let s:Lfiler_command_copy      = 'copy /Y'
+  let s:Lfiler_command_rmdir     = 'rmdir /S /Q '
+else
+  let s:Lfiler_command           = 'ls'
+  let s:Lfiler_command_sort      = [ '', 't', 'tr' ]
+  let s:Lfiler_command_option    = ' -laohp'
+  let s:Lfiler_start_index       = 0
+  let s:Lfiler_start_row         = 0
+  let s:Lfiler_file_start        = 1
+  let s:Lfiler_dir_file_row      = 50
+  let s:Lfiler_file_mark_row     = 49
+  let s:Lfiler_available_pat     = '[rwx-]'
+  let s:Lfiler_dir_symbol1       = 'd'
+  let s:Lfiler_dir_symbol2       = 'D'
+  let s:Lfiler_dir_filetype_row  = 0
+  let s:Lfiler_dir_filetype_erow = 0
+  let s:Lfiler_path_delim        = '/'
+  let s:Lfiler_available_char    = '[-drwx]\+'
+  let s:Lfiler_command_copy_r    = 'cp -f -r'
+  let s:Lfiler_command_copy      = 'cp -f'
+  let s:Lfiler_command_rmdir     = 'rmdir '
+endif
 let s:Lfiler_dir_end_index     = 0
 let s:Lfiler_refine_prefix = 'refine'
 let s:Lfiler_refine_word = ''
@@ -12,9 +47,9 @@ let s:Lfiler_refine_word = ''
 let s:Lfiler_sort = {
   \ 'title'       : '',
   \ 'prefix'      : 'sort',
-  \ 'options'     : [ 'N', 'S', 'D', 'E', 'R' ],
+  \ 'options'     : s:Lfiler_command_sort,
   \ 'option_len'  : 0,
-  \ 'option_max'  : 4,
+  \ 'option_max'  : len(s:Lfiler_command_sort),
   \ 'option_name' : [ 'name', 'size', 'date', 'extension', 'reverse' ],
   \ 'current'     : 0,
   \ }
@@ -168,6 +203,8 @@ function! Lfiler#Help()
 endfunction
 
 function! Lfiler#Update(holdcur, issue_cmd)
+  let cl = 4
+  let cc = s:Lfiler_dir_file_row
   if a:holdcur == 1
     let cl = line('.')
     let cc = col('.')
@@ -177,27 +214,54 @@ function! Lfiler#Update(holdcur, issue_cmd)
   let pwd = s:getCurDir()
   % delete _
   let opt = s:getSortOptionParam()
-  if pwd[0:1] == '\\' "for unc
-    let opt = ' '.pwd
+  if has('win32')
+    if pwd[0:1] == '\\' "for unc
+      let opt = ' '.pwd
+    endif
   endif
   if a:issue_cmd == 1 || empty(s:Lfiler_dir_lines)
-    let s:Lfiler_dir_lines = split(s:system('dir '.opt), '\n')
+    let s:Lfiler_dir_lines = split(s:system(s:Lfiler_command . opt), '\n')
+    if !has('win32')
+      let cnt = 7
+      let next = 0
+      while cnt > 0 
+        let next = matchend(s:Lfiler_dir_lines[s:Lfiler_file_start], ' \+', next+1)
+        if next == 0
+          echoerr "ls format error!"
+          return
+        endif
+        let cnt = cnt - 1
+      endwhile
+      let cnt = s:Lfiler_dir_file_row - next
+      if cnt > 0
+        let indent = ''
+        while cnt > 0 
+          let indent = indent . ' '
+          let cnt = cnt - 1
+        endwhile
+        let s:Lfiler_dir_lines = map(s:Lfiler_dir_lines, 'v:val[:next-1] . indent . v:val[next:]')
+      endif
+    endif
   endif
   let ww = winwidth(0)
-  call setline(1, printf('%-' . ww . 's', s:Lfiler_dir_lines[3][1:] . ' [F1: help]') . ".")
+  call setline(1, printf('%-' . ww . 's', s:Lfiler_dir_lines[s:Lfiler_start_index][s:Lfiler_start_row:] . ' [F1: help]') . ".")
   call setline(2, s:Lfiler_sort.title.s:Lfiler_refine_word)
   let dirline = []
-  if s:getFileName(s:Lfiler_dir_lines[5]) == '.'
-    let dirline = s:Lfiler_dir_lines[6:]
+  if s:getFileName(s:Lfiler_dir_lines[s:Lfiler_file_start]) == '.'
+    let dirline = s:Lfiler_dir_lines[s:Lfiler_file_start+1:]
   else
-    let dirline = s:Lfiler_dir_lines[5:]
+    let dirline = s:Lfiler_dir_lines[s:Lfiler_file_start:]
   endif
   if s:Lfiler_refine_word != ''
     call filter(dirline, "s:refine_filter(v:val)")
   endif
   call setline(3, dirline)
   let curpos = 3+len(dirline)
-  let s:Lfiler_dir_end_index = curpos - 3
+  if has('win32')
+    let s:Lfiler_dir_end_index = curpos - 3
+  else
+    let s:Lfiler_dir_end_index = curpos - 1
+  endif
 
   let curpos = s:appendList(curpos, s:Lfiler_yank)
   let curpos = s:appendList(curpos, s:Lfiler_bookmark)
@@ -205,8 +269,8 @@ function! Lfiler#Update(holdcur, issue_cmd)
   let curpos = s:appendList(curpos, s:Lfiler_git)
   let curpos = s:appendList(curpos, s:Lfiler_svn)
 
-  if a:holdcur == 0
-    call cursor(3,37)
+  if a:holdcur == -1
+    call cursor(3,s:Lfiler_dir_file_row + 1)
   else
     call cursor(cl,cc)
   endif
@@ -229,7 +293,7 @@ function! Lfiler#Open(mode)
     tabp
     return
   endif
-  if dir == '<DIR>' || dir == '<SYML'
+  if dir == s:Lfiler_dir_symbol1 || dir == s:Lfiler_dir_symbol2
     call s:cd(pwd.item)
     call Lfiler#Update(0,1)
   else
@@ -306,11 +370,11 @@ function! Lfiler#PasteFile(mode)
       let cmd = 'move /Y'
       let dest_append = ''
     elseif isdirectory(file)
-      let cmd = 'xcopy /E /I /F /H /Y'
+      let cmd = s:Lfiler_command_copy_r
       let s = strridx(file, "\\")
       exe 'let dest_append = file[s+1:]'
     else
-      let cmd = 'copy /Y'
+      let cmd = s:Lfiler_command_copy
       let dest_append = ''
     endif
     echo s:system(cmd.' '.shellescape(file).' '.shellescape(s:getCurDir().dest_append))
@@ -341,7 +405,7 @@ function! Lfiler#CreateFolder()
   if dest == ''
     return
   endif
-  echo s:system('mkdir '.dest)
+  call mkdir(dest)
   call Lfiler#Update(1,1)
 endfunction
 
@@ -369,7 +433,7 @@ function! Lfiler#DeleteFile()
     if mode == 0
       let pwd = s:getCurDir()
       if isdirectory(pwd.file)
-        echo s:system('rmdir /S /Q '.shellescape(pwd.file))
+        echo s:system(s:Lfiler_command_rmdir.shellescape(pwd.file))
       else
         call delete(file)
       endif
@@ -553,7 +617,7 @@ function! s:getListInfoUnderCursor()
     let midx = s:Lfiler_svn.mark_row
     let mode = s:Lfiler_svn.mode
   else 
-    let start = 1
+    let start = 3
     let end = s:Lfiler_git.start_index
     let midx = s:Lfiler_file_mark_row
     let mode = 0
@@ -590,8 +654,8 @@ endfunction
 
 function! s:getCurDir()
   let pwd  = expand('%:p:h')
-  if pwd[strlen(pwd)-1] != '\'
-    let pwd = pwd . '\'
+  if pwd[strlen(pwd)-1] != s:Lfiler_path_delim
+    let pwd = pwd . s:Lfiler_path_delim
   endif
   return pwd
 endfunction
@@ -604,13 +668,8 @@ function! s:getFileName(line)
       return a:line[3:]
     endif
   endif
-  let dir  = s:getDirType(a:line)
-  if dir == '<SYML'
-    let pos = match(a:line, '\[.*\.*]')
-    if pos > 2
-      let pos -= 2
-    endif
-    return a:line[s:Lfiler_dir_file_row : pos]
+  if s:isSymlink(a:line) == 1
+    return s:getSymlink(a:line)
   endif
   return a:line[s:Lfiler_dir_file_row : ]
 endfunction
@@ -619,14 +678,35 @@ function! s:getDirType(line)
   return a:line[s:Lfiler_dir_filetype_row : s:Lfiler_dir_filetype_erow]
 endfunction
 
+function! s:isSymlink(line)
+  if has('win32')
+    return s:getDirType(a:line) == '<SYML'
+  else
+    return match(a:line, ' -> ') != -1
+  endif
+endfunction
+
+function! s:getSymlink(line)
+  if has('win32')
+    let pos = match(a:line, '\[.*\.*]')
+    if pos > 2
+      let pos -= 2
+    endif
+    return a:line[s:Lfiler_dir_file_row : pos]
+  else
+    let last = match(a:line, ' -> ') - 1
+    return a:line[s:Lfiler_dir_file_row : last]
+  endif
+endfunction
+
 function! s:isAvailableLine(line)
-  if match(a:line, '[0-9]\{4\}') == 0
+  if match(a:line, s:Lfiler_available_pat) == 0
     if a:line[s:Lfiler_dir_file_row : ] == '..' || a:line[s:Lfiler_dir_file_row : ] == '.'
       return 0
     endif
     return 1
   endif
-  if a:line[0:1] =~ ' [-MADRCUXI?!~S+KOTB]'
+  if a:line[0:1] =~ s:Lfiler_available_char
     return 1
   endif
   return 0
@@ -640,7 +720,7 @@ function! s:getMarkRow(cl)
 endfunction
 
 function! s:getSortOptionParam()
-  return '/OG'.s:Lfiler_sort.options[s:Lfiler_sort.current]
+  return s:Lfiler_command_option.s:Lfiler_sort.options[s:Lfiler_sort.current]
 endfunction
 
 function! s:quest(label, default, breakstr)

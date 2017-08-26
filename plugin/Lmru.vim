@@ -10,7 +10,11 @@ if !exists("g:Lmru_max_count")
   let g:Lmru_max_count = 100
 endif
 if !exists("g:Lmru_file")
-  let g:Lmru_file = $home.'\\.vim_mru'
+  if has('win32')
+    let g:Lmru_file = $HOME.'\\.vim_mru'
+  else
+    let g:Lmru_file = $HOME.'/.vim_mru'
+  endif
 endif
 
 command! -nargs=? Lmru :call Lmru#do(<f-args>)
