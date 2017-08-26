@@ -22,7 +22,11 @@ if !exists('g:Lfiler_disable_default_explorer')
 endif
 
 if !exists("g:Lfiler_bookmark_file")
-  let g:Lfiler_bookmark_file = $home.'\\.vim_bookmark'
+  if has('win32')
+    let g:Lfiler_bookmark_file = $home.'\\.vim_bookmark'
+  else
+    let g:Lfiler_bookmark_file = $home.'/.vim_bookmark'
+  endif
 endif
 
 let g:Lfiler_loaded = 1
